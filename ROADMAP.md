@@ -30,13 +30,15 @@ Ship `M1 + M2` as **v0.1** early — it is already competitive.
       tool-use `input_json_delta` streaming (`streamAnthropicToolInput`)
 
 ## M5 — Harden & launch
-- [ ] Expand fuzz corpus; add adversarial/invalid-input tests (must stay
-      best-effort, never throw)
-- [ ] Published comparison benchmark vs. incumbents (re-verify every table claim)
-- [ ] CI matrix (Node 18/20/22, Bun) + `size-limit` gate
-- [ ] npm publish with `--provenance`
-- [ ] README demo gif + launch post ("partial-json has 35M downloads/mo and
-      hasn't shipped since 2024")
+- [x] Expand fuzz corpus; adversarial/invalid-input tests + a seeded property
+      test over 200 random docs (`test/fuzz-adversarial.test.ts`)
+- [x] Comparison benchmark vs. incumbents in-repo (`BENCHMARKS.md`), reproducible
+      and re-verified
+- [x] CI matrix (Node 18/20/22) + Bun smoke job + `size-limit` + lint gates
+- [x] Lint/format gate (Biome), cross-runtime smoke test (`scripts/smoke.mjs`)
+- [ ] npm publish with `--provenance` — CI job is ready; needs `NPM_TOKEN` secret
+      and a `v0.1.0` tag (owner action). See LAUNCH.md.
+- [ ] README demo gif + launch post — draft in LAUNCH.md; GIF still to record
 
 ## Known ambiguities (document, don't hide)
 - A bare trailing integer may still grow in a later chunk (`12` → `123`).

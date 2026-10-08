@@ -44,7 +44,7 @@ export const DOCS: unknown[] = [
   },
 
   // Escapes, unicode, surrogate pairs, nesting
-  { text: "line\nbreak\ttab \"quoted\" \\slash", emoji: "café ❤ 😀", nested: { a: { b: { c: 1 } } } },
+  { text: 'line\nbreak\ttab "quoted" \\slash', emoji: "café ❤ 😀", nested: { a: { b: { c: 1 } } } },
 
   // Numeric edge cases
   { zero: 0, neg: -0.001, exp: 1.5e-10, big: 9007199254740991 },

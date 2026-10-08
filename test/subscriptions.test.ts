@@ -93,7 +93,7 @@ describe("unsubscribe and once", () => {
     let calls = 0;
     p.on("path", "a", () => calls++, { once: true });
     p.write('{"a":1');
-    p.write(",\"b\":2}");
+    p.write(',"b":2}');
     p.end();
     expect(calls).toBe(1);
   });

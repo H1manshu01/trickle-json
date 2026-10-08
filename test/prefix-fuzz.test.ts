@@ -19,7 +19,7 @@ const DOCS: unknown[] = [
   [1, 2, 3, 4, 5],
   { a: 1, b: [1, 2, 3], c: "hello", d: true, e: null, f: { g: "nested" } },
   { name: "Jane", tags: ["x", "y"], scores: [1.5, 2.5], active: false },
-  { unicode: "café ❤", escaped: "line\nbreak\ttab\"quote\"\\slash" },
+  { unicode: "café ❤", escaped: 'line\nbreak\ttab"quote"\\slash' },
   { surrogate: "emoji 😀 pair" },
   { deep: { a: { b: { c: [{ d: 1 }, { d: 2 }] } } } },
   { empty: {}, list: [], zero: 0, neg: -0.001, exp: 1.5e-10 },

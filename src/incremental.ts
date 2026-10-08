@@ -281,7 +281,16 @@ export class IncrementalParser {
         return false;
       }
       // missing comma before another element (arrays are lenient)
-      if (ch === '"' || ch === "{" || ch === "[" || ch === "t" || ch === "f" || ch === "n" || ch === "-" || isDigit(ch)) {
+      if (
+        ch === '"' ||
+        ch === "{" ||
+        ch === "[" ||
+        ch === "t" ||
+        ch === "f" ||
+        ch === "n" ||
+        ch === "-" ||
+        isDigit(ch)
+      ) {
         this.targetForCurrentContainer();
         this.state = S_VALUE;
         return false;

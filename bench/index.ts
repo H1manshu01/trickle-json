@@ -109,7 +109,7 @@ async function measureCorrectness(adapters: Adapter[]): Promise<Correctness[]> {
 
     // Empty-input behavior.
     const empty = await runAdapter(a, "");
-    c.emptyBehavior = empty.threw ? "throws" : JSON.stringify(empty.value) ?? "undefined";
+    c.emptyBehavior = empty.threw ? "throws" : (JSON.stringify(empty.value) ?? "undefined");
 
     for (const { full, truthCanon } of docs) {
       const truth = JSON.parse(full);
@@ -207,8 +207,12 @@ async function main(): Promise<void> {
     const rel = `${(ops / fastest).toFixed(2)}x`;
     console.log(`${pad(name, 24)}| ${pad(Math.round(ops).toLocaleString(), 16)}| ${rel}`);
   }
-  console.log("\njsonriver: n/a (streaming/async API — not comparable on sync one-shot throughput)\n");
-  console.log("Methodology: see the header comment in bench/index.ts. Re-verify before publishing.\n");
+  console.log(
+    "\njsonriver: n/a (streaming/async API — not comparable on sync one-shot throughput)\n",
+  );
+  console.log(
+    "Methodology: see the header comment in bench/index.ts. Re-verify before publishing.\n",
+  );
 }
 
 main().catch((err) => {

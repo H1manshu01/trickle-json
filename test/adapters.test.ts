@@ -69,13 +69,16 @@ const ANTHROPIC_TOOL_SSE = [
 describe("SSE parsing is robust to chunk boundaries", () => {
   it("parses OpenAI content SSE split at every size", async () => {
     for (const size of [1, 3, 7, 50, 10000]) {
-      const final = await last(fromOpenAIStream(openAISSEToChunks(chunks(OPENAI_CONTENT_SSE, size))));
+      const final = await last(
+        fromOpenAIStream(openAISSEToChunks(chunks(OPENAI_CONTENT_SSE, size))),
+      );
       expect(final).toEqual({ city: "Paris", ok: true });
     }
   });
 
   it("handles UTF-8 split across byte-chunk boundaries", async () => {
-    const sse = 'data: {"choices":[{"delta":{"content":"{\\"msg\\":\\"café ❤ 😀\\"}"}}]}\n\ndata: [DONE]\n\n';
+    const sse =
+      'data: {"choices":[{"delta":{"content":"{\\"msg\\":\\"café ❤ 😀\\"}"}}]}\n\ndata: [DONE]\n\n';
     const final = await last(fromOpenAIStream(openAISSEToChunks(byteChunks(sse, 2))));
     expect(final).toEqual({ msg: "café ❤ 😀" });
   });
@@ -91,7 +94,9 @@ describe("OpenAI tool-call argument streaming", () => {
 
   it("exposes partial arguments mid-stream", async () => {
     const snapshots: unknown[] = [];
-    for await (const calls of streamOpenAIToolCalls(openAISSEToChunks(chunks(OPENAI_TOOL_SSE, 5)))) {
+    for await (const calls of streamOpenAIToolCalls(
+      openAISSEToChunks(chunks(OPENAI_TOOL_SSE, 5)),
+    )) {
       snapshots.push(JSON.parse(JSON.stringify(calls)));
     }
     // First update has only the partial "{" worth of arguments.

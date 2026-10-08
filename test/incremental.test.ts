@@ -23,8 +23,15 @@ const VALID_DOCS: unknown[] = [
     choices: [{ index: 0, message: { role: "assistant", content: "Hello there, world." } }],
     usage: { prompt_tokens: 12, completion_tokens: 34 },
   },
-  { items: [{ id: 1, tags: ["x", "y"] }, { id: 2, tags: [] }, { id: 3, tags: ["z"] }], total: 3 },
-  { text: "line\nbreak\ttab \"q\" \\s", emoji: "café ❤ 😀", nested: { a: { b: { c: 1 } } } },
+  {
+    items: [
+      { id: 1, tags: ["x", "y"] },
+      { id: 2, tags: [] },
+      { id: 3, tags: ["z"] },
+    ],
+    total: 3,
+  },
+  { text: 'line\nbreak\ttab "q" \\s', emoji: "café ❤ 😀", nested: { a: { b: { c: 1 } } } },
   { zero: 0, neg: -0.001, exp: 1.5e-10, big: 9007199254740991, arr: [-1, 2.5, 3e2] },
   {},
   [],

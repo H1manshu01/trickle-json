@@ -1,6 +1,6 @@
 {
   "name": "trickle-json",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Incremental, typed, zero-dependency partial-JSON parser for LLM streams — get the best valid value out of JSON that is still arriving.",
   "type": "module",
   "license": "MIT",
@@ -54,9 +54,7 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -66,6 +64,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "size": "size-limit",
+    "smoke": "node scripts/smoke.mjs",
     "bench": "tsx bench/index.ts",
     "bench:stream": "tsx bench/streaming.ts",
     "prepublishOnly": "npm run build"
