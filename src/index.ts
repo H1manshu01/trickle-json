@@ -226,14 +226,48 @@ export interface SnapshotMeta {
   done: boolean;
 }
 
+/** The concrete location of a matched value, e.g. `["items", 0, "id"]`. */
+export type PathSegments = Array<string | number>;
+
 export type SnapshotListener = (value: unknown, meta: SnapshotMeta) => void;
-export type PathListener = (value: unknown) => void;
+/** `segments` is the concrete path matched (useful when the path has wildcards). */
+export type PathListener = (value: unknown, segments: PathSegments) => void;
+/** Fired once per array element as it first appears. */
+export type AppendListener = (item: unknown, index: number, segments: PathSegments) => void;
+
+export interface ListenerOptions {
+  /** Remove the subscription after it fires once. */
+  once?: boolean;
+}
+
+/** Remove a subscription. Safe to call more than once. */
+export type Unsubscribe = () => void;
+
+interface SnapSub {
+  cb: SnapshotListener;
+  once: boolean;
+  dead: boolean;
+}
 
 interface PathSub {
-  path: string;
+  tokens: string[];
   cb: PathListener;
-  last: string | undefined;
-  seen: boolean;
+  once: boolean;
+  dead: boolean;
+  seen: Map<string, string>; // concrete-path key → last serialized value
+}
+
+interface AppendSub {
+  tokens: string[];
+  cb: AppendListener;
+  once: boolean;
+  dead: boolean;
+  lens: Map<string, number>; // concrete array-path key → last seen length
+}
+
+interface Match {
+  segments: PathSegments;
+  value: unknown;
 }
 
 /**
@@ -243,9 +277,16 @@ interface PathSub {
  * const parser = new StreamingJsonParser();
  * parser.on("snapshot", (value) => render(value));
  * parser.on("path", "choices[0].message.content", (text) => appendToken(text));
+ * parser.on("path", "items[*].id", (id, segments) => console.log(segments, id));
+ * const stop = parser.on("append", "items", (item, i) => addRow(i, item));
  * for await (const chunk of stream) parser.write(chunk);
- * const final = parser.end();
+ * parser.end();
+ * stop(); // unsubscribe
  * ```
+ *
+ * Paths use dotted/indexed syntax with `*` as a wildcard for any key or index
+ * (`items[*].id`, `choices[*].message.content`, `data.*`). Each `on` call
+ * returns an {@link Unsubscribe} function.
  *
  * Backed by a true incremental parser: each character is processed exactly once
  * across all `write` calls, so total work is O(input length) regardless of how
@@ -254,18 +295,44 @@ interface PathSub {
 export class StreamingJsonParser {
   private engine = new IncrementalParser();
   private buf = "";
-  private snapshotListeners: SnapshotListener[] = [];
+  private snapSubs: SnapSub[] = [];
   private pathSubs: PathSub[] = [];
+  private appendSubs: AppendSub[] = [];
 
-  on(event: "snapshot", cb: SnapshotListener): this;
-  on(event: "path", path: string, cb: PathListener): this;
-  on(event: "snapshot" | "path", a: SnapshotListener | string, b?: PathListener): this {
+  on(event: "snapshot", cb: SnapshotListener, opts?: ListenerOptions): Unsubscribe;
+  on(event: "path", path: string, cb: PathListener, opts?: ListenerOptions): Unsubscribe;
+  on(event: "append", path: string, cb: AppendListener, opts?: ListenerOptions): Unsubscribe;
+  on(
+    event: "snapshot" | "path" | "append",
+    a: SnapshotListener | string,
+    b?: PathListener | AppendListener | ListenerOptions,
+    c?: ListenerOptions,
+  ): Unsubscribe {
     if (event === "snapshot") {
-      this.snapshotListeners.push(a as SnapshotListener);
-    } else {
-      this.pathSubs.push({ path: a as string, cb: b as PathListener, last: undefined, seen: false });
+      const sub: SnapSub = {
+        cb: a as SnapshotListener,
+        once: (b as ListenerOptions | undefined)?.once ?? false,
+        dead: false,
+      };
+      this.snapSubs.push(sub);
+      return () => {
+        sub.dead = true;
+      };
     }
-    return this;
+    const tokens = tokenizePath(a as string);
+    const once = c?.once ?? false;
+    if (event === "path") {
+      const sub: PathSub = { tokens, cb: b as PathListener, once, dead: false, seen: new Map() };
+      this.pathSubs.push(sub);
+      return () => {
+        sub.dead = true;
+      };
+    }
+    const sub: AppendSub = { tokens, cb: b as AppendListener, once, dead: false, lens: new Map() };
+    this.appendSubs.push(sub);
+    return () => {
+      sub.dead = true;
+    };
   }
 
   /** Append a chunk and emit updates. Returns the current best-effort value. */
@@ -287,31 +354,126 @@ export class StreamingJsonParser {
 
   private flush(done: boolean): unknown {
     const value = this.engine.snapshot();
-    for (const l of this.snapshotListeners) l(value, { done });
+
+    for (const sub of this.snapSubs) {
+      if (sub.dead) continue;
+      sub.cb(value, { done });
+      if (sub.once) sub.dead = true;
+    }
+
     for (const sub of this.pathSubs) {
-      const v = getPath(value, sub.path);
-      if (v === undefined) continue;
-      const ser = safeSerialize(v);
-      if (!sub.seen || ser !== sub.last) {
-        sub.seen = true;
-        sub.last = ser;
-        sub.cb(v);
+      if (sub.dead) continue;
+      for (const m of collect(value, sub.tokens)) {
+        if (m.value === undefined) continue;
+        const key = segKey(m.segments);
+        const ser = safeSerialize(m.value);
+        if (sub.seen.get(key) !== ser) {
+          sub.seen.set(key, ser);
+          sub.cb(m.value, m.segments);
+          if (sub.once) {
+            sub.dead = true;
+            break;
+          }
+        }
       }
     }
+
+    for (const sub of this.appendSubs) {
+      if (sub.dead) continue;
+      let fired = false;
+      for (const m of collect(value, sub.tokens)) {
+        if (!Array.isArray(m.value)) continue;
+        const key = segKey(m.segments);
+        const prev = sub.lens.get(key) ?? 0;
+        if (m.value.length > prev) {
+          for (let i = prev; i < m.value.length; i++) {
+            sub.cb(m.value[i], i, [...m.segments, i]);
+            fired = true;
+            if (sub.once) break;
+          }
+          sub.lens.set(key, m.value.length);
+        }
+        if (sub.once && fired) break;
+      }
+      if (sub.once && fired) sub.dead = true;
+    }
+
+    this.sweep();
     return value;
+  }
+
+  private sweep(): void {
+    if (this.snapSubs.some((s) => s.dead)) this.snapSubs = this.snapSubs.filter((s) => !s.dead);
+    if (this.pathSubs.some((s) => s.dead)) this.pathSubs = this.pathSubs.filter((s) => !s.dead);
+    if (this.appendSubs.some((s) => s.dead))
+      this.appendSubs = this.appendSubs.filter((s) => !s.dead);
   }
 }
 
-/** Read a value at a dotted/indexed path, e.g. `"choices[0].message.content"`. */
+/** Split a path into segment tokens; `*` is a wildcard. e.g. `a.b[0].c` → [a,b,0,c]. */
+function tokenizePath(path: string): string[] {
+  return path.match(/[^.[\]]+/g) ?? [];
+}
+
+function segKey(segments: PathSegments): string {
+  return segments.join("\u0000");
+}
+
+/** Read the single value at a concrete (wildcard-free) path, e.g. `"a.b[0].c"`. */
 export function getPath(obj: unknown, path: string): unknown {
-  const tokens = path.match(/[^.[\]]+/g);
-  if (!tokens) return obj;
+  const tokens = tokenizePath(path);
   let cur: unknown = obj;
   for (const t of tokens) {
     if (cur == null || typeof cur !== "object") return undefined;
     cur = (cur as Record<string, unknown>)[t];
   }
   return cur;
+}
+
+/** Resolve a (possibly wildcard) path against a value into all concrete matches. */
+function collect(root: unknown, tokens: string[]): Match[] {
+  const out: Match[] = [];
+  walk(root, tokens, 0, [], out);
+  return out;
+}
+
+function walk(node: unknown, tokens: string[], i: number, segs: PathSegments, out: Match[]): void {
+  if (i === tokens.length) {
+    out.push({ segments: segs.slice(), value: node });
+    return;
+  }
+  if (node == null || typeof node !== "object") return;
+  const tok = tokens[i]!;
+
+  if (tok === "*") {
+    if (Array.isArray(node)) {
+      for (let k = 0; k < node.length; k++) {
+        segs.push(k);
+        walk(node[k], tokens, i + 1, segs, out);
+        segs.pop();
+      }
+    } else {
+      for (const key of Object.keys(node)) {
+        segs.push(key);
+        walk((node as Record<string, unknown>)[key], tokens, i + 1, segs, out);
+        segs.pop();
+      }
+    }
+    return;
+  }
+
+  if (Array.isArray(node)) {
+    const idx = Number(tok);
+    if (!Number.isInteger(idx) || idx < 0 || idx >= node.length) return;
+    segs.push(idx);
+    walk(node[idx], tokens, i + 1, segs, out);
+    segs.pop();
+  } else {
+    if (!(tok in (node as Record<string, unknown>))) return;
+    segs.push(tok);
+    walk((node as Record<string, unknown>)[tok], tokens, i + 1, segs, out);
+    segs.pop();
+  }
 }
 
 function safeSerialize(v: unknown): string {
