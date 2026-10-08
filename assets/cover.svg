@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <!-- background -->
+  <rect x="0" y="0" width="1000" height="420" fill="#0d1117"/>
+  <rect x="0" y="0" width="1000" height="4" fill="#7ee787"/>
+
+  <!-- left column -->
+  <text x="56" y="150" font-size="54" font-weight="700" fill="#e6edf3">trickle<tspan fill="#7ee787">-json</tspan></text>
+  <text x="58" y="192" font-size="20" fill="#c9d1d9">Partial-JSON parser for LLM streams</text>
+  <text x="58" y="222" font-size="15" fill="#8b949e">best valid value on every chunk — never throws</text>
+
+  <!-- feature chips -->
+  <g font-size="15" fill="#c9d1d9">
+    <rect x="56" y="256" width="150" height="34" rx="17" fill="#161b22" stroke="#30363d"/>
+    <text x="131" y="278" text-anchor="middle">zero-dependency</text>
+    <rect x="216" y="256" width="118" height="34" rx="17" fill="#161b22" stroke="#30363d"/>
+    <text x="275" y="278" text-anchor="middle">O(n) streaming</text>
+    <rect x="344" y="256" width="96" height="34" rx="17" fill="#161b22" stroke="#30363d"/>
+    <text x="392" y="278" text-anchor="middle">~2.6 kB</text>
+  </g>
+
+  <!-- install line -->
+  <text x="58" y="344" font-size="18"><tspan fill="#7ee787">$</tspan> <tspan fill="#c9d1d9">npm install trickle-json</tspan></text>
+
+  <!-- terminal card (right) -->
+  <rect x="512" y="56" width="432" height="308" rx="12" fill="#010409" stroke="#30363d" stroke-width="1"/>
+  <rect x="512" y="56" width="432" height="38" rx="12" fill="#161b22"/>
+  <rect x="512" y="82" width="432" height="12" fill="#161b22"/>
+  <circle cx="534" cy="75" r="5.5" fill="#ff5f56"/>
+  <circle cx="553" cy="75" r="5.5" fill="#ffbd2e"/>
+  <circle cx="572" cy="75" r="5.5" fill="#27c93f"/>
+  <text x="728" y="80" text-anchor="middle" font-size="12" fill="#8b949e">LLM response · streaming</text>
+
+  <!-- json body (fully revealed, static) -->
+  <g font-size="15">
+    <text x="532" y="130"><tspan fill="#8b949e">{</tspan></text>
+    <text x="552" y="158"><tspan fill="#7ee787">"items"</tspan><tspan fill="#8b949e">: [</tspan></text>
+    <text x="572" y="186"><tspan fill="#8b949e">{ </tspan><tspan fill="#7ee787">"id"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#ffa657">1</tspan><tspan fill="#8b949e">, </tspan><tspan fill="#7ee787">"name"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#a5d6ff">"Keyboard"</tspan><tspan fill="#8b949e"> },</tspan></text>
+    <text x="572" y="214"><tspan fill="#8b949e">{ </tspan><tspan fill="#7ee787">"id"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#ffa657">2</tspan><tspan fill="#8b949e">, </tspan><tspan fill="#7ee787">"name"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#a5d6ff">"Monitor"</tspan><tspan fill="#8b949e"> },</tspan></text>
+    <text x="572" y="242"><tspan fill="#8b949e">{ </tspan><tspan fill="#7ee787">"id"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#ffa657">3</tspan><tspan fill="#8b949e">, </tspan><tspan fill="#7ee787">"name"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#a5d6ff">"Web</tspan></text>
+    <!-- caret at the live edge of the still-streaming string -->
+    <rect x="787" y="230" width="8" height="16" fill="#7ee787"/>
+  </g>
+  <text x="532" y="286" font-size="13" fill="#6e7681">// valid, best-effort value after every chunk…</text>
+</svg>
