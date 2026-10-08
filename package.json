@@ -67,6 +67,7 @@
     "format": "biome format --write .",
     "size": "size-limit",
     "bench": "tsx bench/index.ts",
+    "bench:stream": "tsx bench/streaming.ts",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
@@ -95,7 +96,7 @@
     {
       "name": "core (parsePartial + StreamingJsonParser)",
       "path": "dist/index.js",
-      "limit": "2 kB"
+      "limit": "3 kB"
     }
   ],
   "engines": {

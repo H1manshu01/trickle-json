@@ -7,11 +7,12 @@ Ship `M1 + M2` as **v0.1** early — it is already competitive.
 - [x] Correct on every truncation point (prefix-fuzz suite)
 - [x] Never throws on truncated input
 
-## M2 — Streaming ✅ (scaffolded, v0.1 strategy)
+## M2 — Streaming ✅
 - [x] `StreamingJsonParser` with chunk accumulation + `snapshot` events
-- [ ] True incremental parsing (reuse work across chunks instead of re-parsing
-      the whole buffer — O(n) total instead of O(n²)). Current approach is
-      correct but re-parses on each `write`.
+- [x] True incremental parsing (`IncrementalParser`): each character processed
+      once across all chunks — O(n) total instead of O(n²). Verified equivalent
+      to `parsePartial` on every prefix (see `test/incremental.test.ts`) and
+      ~2,150× faster than the old re-parse strategy at 2k records (BENCHMARKS.md).
 
 ## M3 — Subscriptions
 - [x] Path matching (`a.b[0].c`)

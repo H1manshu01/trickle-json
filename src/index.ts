@@ -7,6 +7,10 @@
  * never an exception — so it is safe to call on every streamed chunk.
  */
 
+import { IncrementalParser } from "./incremental.js";
+
+export { IncrementalParser } from "./incremental.js";
+
 /** Internal sentinel: "no usable value could be read at this position yet." */
 const INCOMPLETE = Symbol("trickle-json/incomplete");
 
@@ -243,11 +247,12 @@ interface PathSub {
  * const final = parser.end();
  * ```
  *
- * v0.1 re-parses the accumulated buffer on every `write`, which is correct and
- * simple. A true incremental parser (reusing work across chunks) is tracked for
- * a later release — see ROADMAP.
+ * Backed by a true incremental parser: each character is processed exactly once
+ * across all `write` calls, so total work is O(input length) regardless of how
+ * the input is chunked (no per-chunk re-parsing of the whole buffer).
  */
 export class StreamingJsonParser {
+  private engine = new IncrementalParser();
   private buf = "";
   private snapshotListeners: SnapshotListener[] = [];
   private pathSubs: PathSub[] = [];
@@ -266,6 +271,7 @@ export class StreamingJsonParser {
   /** Append a chunk and emit updates. Returns the current best-effort value. */
   write(chunk: string): unknown {
     this.buf += chunk;
+    this.engine.writeChunk(chunk);
     return this.flush(false);
   }
 
@@ -280,7 +286,7 @@ export class StreamingJsonParser {
   }
 
   private flush(done: boolean): unknown {
-    const value = parsePartial(this.buf);
+    const value = this.engine.snapshot();
     for (const l of this.snapshotListeners) l(value, { done });
     for (const sub of this.pathSubs) {
       const v = getPath(value, sub.path);
