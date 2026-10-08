@@ -74,11 +74,26 @@ Empty/whitespace input returns `undefined`. Never throws on truncation.
 - `.write(chunk)` — append text, emit updates, return the current value.
 - `.end()` — finish, emit a final snapshot, return the final value.
 - `.on("snapshot", (value, { done }) => …)`
-- `.on("path", "a.b[0].c", (value) => …)` — fires when a path's value changes.
+- `.on("path", "a.b[0].c", (value, segments) => …)` — fires when a matched
+  path's value changes. Supports `*` wildcards: `items[*].id`,
+  `choices[*].message.content`, `data.*`. `segments` is the concrete path
+  matched (e.g. `["items", 2, "id"]`).
+- `.on("append", "items", (item, index, segments) => …)` — fires once per array
+  element as it first appears; the path may contain wildcards.
 - `.buffered` — the raw text accumulated so far.
 
+Every `.on(...)` returns an **unsubscribe** function, and accepts an optional
+`{ once: true }` to auto-remove after the first fire:
+
+```ts
+const stop = parser.on("append", "items", addRow);
+parser.on("path", "status", onStatus, { once: true });
+// ...later
+stop();
+```
+
 ### `getPath(obj, "a.b[0].c"): unknown`
-Read a value at a dotted/indexed path.
+Read a single value at a concrete (wildcard-free) dotted/indexed path.
 
 ### Subpath entry points
 - `trickle-json/zod` — `parsePartialZod(input, schema)` (optional `zod` peer dep).

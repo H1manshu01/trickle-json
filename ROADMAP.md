@@ -14,10 +14,11 @@ Ship `M1 + M2` as **v0.1** early — it is already competitive.
       to `parsePartial` on every prefix (see `test/incremental.test.ts`) and
       ~2,150× faster than the old re-parse strategy at 2k records (BENCHMARKS.md).
 
-## M3 — Subscriptions
+## M3 — Subscriptions ✅
 - [x] Path matching (`a.b[0].c`)
-- [ ] Wildcards (`items[*].id`) and array-append events
-- [ ] `once` / unsubscribe handles
+- [x] Wildcards (`items[*].id`, `data.*`) with concrete `segments` reported
+- [x] Array-append events (`on("append", "items", (item, i) => …)`)
+- [x] `once` option and unsubscribe handles (every `on` returns an `Unsubscribe`)
 
 ## M4 — Typed + adapters
 - [ ] `trickle-json/zod`: emit typed *partial* snapshots (schema-aware), not just
