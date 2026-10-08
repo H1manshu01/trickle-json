@@ -1,0 +1,98 @@
+{
+  "name": "trickle-json",
+  "version": "0.0.0",
+  "description": "Incremental, typed, zero-dependency partial-JSON parser for LLM streams — get the best valid value out of JSON that is still arriving.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Himanshu Sharma",
+  "sideEffects": false,
+  "keywords": [
+    "json",
+    "partial-json",
+    "streaming",
+    "stream",
+    "llm",
+    "ai",
+    "parser",
+    "incremental",
+    "sse",
+    "openai",
+    "anthropic",
+    "zod"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/trickle-json.git"
+  },
+  "homepage": "https://github.com/OWNER/trickle-json#readme",
+  "bugs": {
+    "url": "https://github.com/OWNER/trickle-json/issues"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./zod": {
+      "types": "./dist/zod.d.ts",
+      "import": "./dist/zod.js",
+      "require": "./dist/zod.cjs"
+    },
+    "./openai": {
+      "types": "./dist/openai.d.ts",
+      "import": "./dist/openai.js",
+      "require": "./dist/openai.cjs"
+    },
+    "./anthropic": {
+      "types": "./dist/anthropic.d.ts",
+      "import": "./dist/anthropic.js",
+      "require": "./dist/anthropic.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "size": "size-limit",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@size-limit/preset-small-lib": "^11.1.6",
+    "size-limit": "^11.1.6",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "zod": "^3.24.1"
+  },
+  "peerDependencies": {
+    "zod": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "size-limit": [
+    {
+      "name": "core (parsePartial + StreamingJsonParser)",
+      "path": "dist/index.js",
+      "limit": "2 kB"
+    }
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

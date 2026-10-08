@@ -1,0 +1,9 @@
+# Published package ships only dist/ (via package.json "files").
+# This file keeps source/test/config out even if "files" is edited.
+src/
+test/
+*.config.ts
+tsconfig.json
+biome.json
+coverage/
+.github/
