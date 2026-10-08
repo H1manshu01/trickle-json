@@ -5,7 +5,7 @@ export default defineConfig({
   format: ["esm", "cjs"],
   dts: true,
   clean: true,
-  sourcemap: true,
+  sourcemap: false, // keep the published tarball lean (no .map files)
   treeshake: true,
   splitting: true,
   minify: false,

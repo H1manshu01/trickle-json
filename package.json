@@ -1,6 +1,6 @@
 {
   "name": "trickle-json",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Incremental, typed, zero-dependency partial-JSON parser for LLM streams — get the best valid value out of JSON that is still arriving.",
   "type": "module",
   "license": "MIT",

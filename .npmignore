@@ -7,3 +7,5 @@ tsconfig.json
 biome.json
 coverage/
 .github/
+# Ship a lean tarball: keep source maps out of the published package.
+*.map

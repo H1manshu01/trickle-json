@@ -2,6 +2,16 @@
 
 **Incremental, typed, zero-dependency partial-JSON parser for LLM streams.**
 
+<p>
+  <a href="https://www.npmjs.com/package/trickle-json"><img src="https://img.shields.io/npm/v/trickle-json?color=cb3837&logo=npm" alt="npm version"></a>
+  <a href="https://github.com/H1manshu01/trickle-json/actions/workflows/ci.yml"><img src="https://github.com/H1manshu01/trickle-json/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://bundlephobia.com/package/trickle-json"><img src="https://img.shields.io/bundlephobia/minzip/trickle-json?label=min%2Bgzip" alt="minified + gzipped size"></a>
+  <img src="https://img.shields.io/badge/provenance-signed-2ea44f?logo=npm" alt="published with npm provenance">
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/trickle-json?color=blue" alt="MIT license"></a>
+</p>
+
+<img src="assets/demo.svg" alt="trickle-json streaming a JSON list in, one element at a time" width="640">
+
 When a model streams a JSON response token by token, the text is syntactically
 broken until the very last token — so `JSON.parse` throws on every intermediate
 chunk. `trickle-json` gives you the **best valid value available right now**, on

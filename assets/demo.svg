@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="368" viewBox="0 0 680 368" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" role="img" aria-label="trickle-json streaming a JSON list in, one element at a time">
+  <defs>
+    <style>
+      .k { fill: #7ee787; }  /* keys */
+      .s { fill: #a5d6ff; }  /* strings */
+      .n { fill: #ffa657; }  /* numbers */
+      .b { fill: #d2a8ff; }  /* booleans */
+      .p { fill: #8b949e; }  /* punctuation */
+      .t { font-size: 16px; }
+    </style>
+  </defs>
+
+  <!-- terminal card -->
+  <rect x="0" y="0" width="680" height="368" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <rect x="0" y="0" width="680" height="40" rx="12" fill="#161b22"/>
+  <rect x="0" y="28" width="680" height="12" fill="#161b22"/>
+  <circle cx="22" cy="20" r="6" fill="#ff5f56"/>
+  <circle cx="44" cy="20" r="6" fill="#ffbd2e"/>
+  <circle cx="66" cy="20" r="6" fill="#27c93f"/>
+  <text x="340" y="25" text-anchor="middle" font-size="13" fill="#8b949e">LLM response · streaming</text>
+
+  <!-- loop clock: re-fires every cycle so line reveals restart cleanly -->
+  <rect width="0" height="0">
+    <animate id="loop" attributeName="width" begin="0s;loop.end" dur="6.8s" values="0;0"/>
+  </rect>
+
+  <!-- line 0 -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+0.2s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="28" y="84"><tspan class="p">{</tspan></text>
+  </g>
+  <!-- line 1 -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+0.6s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="48" y="114"><tspan class="k">"items"</tspan><tspan class="p">: [</tspan></text>
+  </g>
+  <!-- item 1 -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+1.4s" dur="0.25s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="68" y="144"><tspan class="p">{ </tspan><tspan class="k">"id"</tspan><tspan class="p">: </tspan><tspan class="n">1</tspan><tspan class="p">, </tspan><tspan class="k">"name"</tspan><tspan class="p">: </tspan><tspan class="s">"Keyboard"</tspan><tspan class="p"> },</tspan></text>
+  </g>
+  <!-- item 2 -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+2.4s" dur="0.25s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="68" y="174"><tspan class="p">{ </tspan><tspan class="k">"id"</tspan><tspan class="p">: </tspan><tspan class="n">2</tspan><tspan class="p">, </tspan><tspan class="k">"name"</tspan><tspan class="p">: </tspan><tspan class="s">"Monitor"</tspan><tspan class="p"> },</tspan></text>
+  </g>
+  <!-- item 3 -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+3.4s" dur="0.25s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="68" y="204"><tspan class="p">{ </tspan><tspan class="k">"id"</tspan><tspan class="p">: </tspan><tspan class="n">3</tspan><tspan class="p">, </tspan><tspan class="k">"name"</tspan><tspan class="p">: </tspan><tspan class="s">"Webcam"</tspan><tspan class="p"> }</tspan></text>
+  </g>
+  <!-- line close array -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+4.1s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="48" y="234"><tspan class="p">],</tspan></text>
+  </g>
+  <!-- total -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+4.7s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="48" y="264"><tspan class="k">"total"</tspan><tspan class="p">: </tspan><tspan class="n">3</tspan></text>
+  </g>
+  <!-- close object -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+5.1s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+6.4s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="28" y="294"><tspan class="p">}</tspan></text>
+  </g>
+
+  <!-- blinking caret -->
+  <rect x="28" y="316" width="9" height="18" fill="#7ee787">
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.5;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  <text class="t" x="44" y="330" fill="#8b949e">parsePartial() → valid value on every chunk</text>
+</svg>
