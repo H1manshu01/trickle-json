@@ -51,6 +51,25 @@ measures correctness and throughput.
 throughput (its adapter is wrapped to be fair on the correctness sweep — see
 [`bench/adapters.ts`](./bench/adapters.ts)).
 
+### Streaming throughput — `npm run bench:stream`
+
+A single document is streamed in 32-char chunks; after each chunk the consumer
+reads the current value. This is the workload `StreamingJsonParser` is built for.
+The incremental engine processes each character once (O(n) total); re-parsing the
+accumulated buffer on every chunk is O(n²).
+
+| records | chars | chunks | trickle (incr.) | re-parse (parsePartial) | re-parse (partial-json) | jsonriver |
+|---:|---:|---:|---:|---:|---:|---:|
+| 250 | 34,229 | 1,070 | **1.0 ms** | 182 ms | 297 ms | 2.3 ms |
+| 500 | 68,855 | 2,152 | **1.4 ms** | 740 ms | 1,184 ms | 2.9 ms |
+| 1,000 | 138,306 | 4,323 | **2.9 ms** | 2,927 ms | 4,753 ms | 5.1 ms |
+| 2,000 | 280,806 | 8,776 | **5.7 ms** | 12,347 ms | 21,430 ms | 9.0 ms |
+
+trickle-json and jsonriver scale ~linearly; both re-parse columns grow
+~quadratically. At 2,000 records the incremental engine is **~2,150× faster**
+than re-parsing with `parsePartial` on every chunk — which is exactly the
+pre-M2 `StreamingJsonParser` strategy this rewrite replaced.
+
 ## How to read this
 
 - **trickle-json is the only parser that never throws on truncation *and* returns

@@ -49,12 +49,14 @@ provider adapters — are each scattered across small, single-purpose packages.
 > The comparison matrix above reflects the plan for 1.0. Rows marked ✅ that are
 > still in progress are tracked in [ROADMAP.md](./ROADMAP.md).
 
-Head-to-head measurements (throws-on-truncation, final correctness, no invented
-data, throughput) are in [BENCHMARKS.md](./BENCHMARKS.md) and reproducible with
-`npm run bench`. In that snapshot, `trickle-json` is the only parser that never
-throws on truncation *and* returns `undefined` on empty input, and it is the
-fastest sync partial parser in the set. **Re-run the harness yourself before
-citing any number publicly.**
+Head-to-head measurements are in [BENCHMARKS.md](./BENCHMARKS.md), reproducible
+with `npm run bench` (correctness + sync throughput) and `npm run bench:stream`
+(streaming throughput). In that snapshot, `trickle-json` is the only parser that
+never throws on truncation *and* returns `undefined` on empty input; it is the
+fastest sync partial parser in the set; and because it parses each character once
+across chunks (O(n), not O(n²) re-parsing), streaming a 2,000-record document is
+~2,150× faster than re-parsing the buffer on every chunk. **Re-run the harness
+yourself before citing any number publicly.**
 
 ## Install
 
@@ -101,6 +103,8 @@ npm test          # vitest
 npm run typecheck
 npm run build     # tsup → ESM + CJS + .d.ts
 npm run size      # size-limit
+npm run bench         # correctness + sync throughput vs. incumbents
+npm run bench:stream  # streaming throughput (incremental vs. re-parse)
 ```
 
 ## License
