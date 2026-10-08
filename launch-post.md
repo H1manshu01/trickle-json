@@ -1,10 +1,10 @@
 ---
 title: "JSON.parse throws on every token your LLM streams. Here's a cleaner fix."
-published: false
+published: true
 description: "Streaming structured output from an LLM? The JSON is broken until the last token. Here's why the usual fixes fall short — and trickle-json, a zero-dependency incremental parser built for it."
 tags: javascript, typescript, ai, opensource
 cover_image: https://raw.githubusercontent.com/H1manshu01/trickle-json/main/assets/cover.png
-canonical_url: https://github.com/H1manshu01/trickle-json
+canonical_url: https://dev.to/h1manshu01/jsonparse-throws-on-every-token-your-llm-streams-heres-a-cleaner-fix-4go8
 ---
 
 If you've ever streamed structured output from an LLM, you've met this bug:
