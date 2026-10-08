@@ -22,11 +22,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/trickle-json.git"
+    "url": "git+https://github.com/H1manshu01/trickle-json.git"
   },
-  "homepage": "https://github.com/OWNER/trickle-json#readme",
+  "homepage": "https://github.com/H1manshu01/trickle-json#readme",
   "bugs": {
-    "url": "https://github.com/OWNER/trickle-json/issues"
+    "url": "https://github.com/H1manshu01/trickle-json/issues"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
