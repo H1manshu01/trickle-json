@@ -47,9 +47,14 @@ provider adapters — are each scattered across small, single-purpose packages.
 | Actively maintained | ✅ | ❌ (2024) | ✅ | ✅ |
 
 > The comparison matrix above reflects the plan for 1.0. Rows marked ✅ that are
-> still in progress are tracked in [ROADMAP.md](./ROADMAP.md). **Verify the
-> competitor columns with your own benchmark before publishing this table** —
-> never ship claims you have not re-checked.
+> still in progress are tracked in [ROADMAP.md](./ROADMAP.md).
+
+Head-to-head measurements (throws-on-truncation, final correctness, no invented
+data, throughput) are in [BENCHMARKS.md](./BENCHMARKS.md) and reproducible with
+`npm run bench`. In that snapshot, `trickle-json` is the only parser that never
+throws on truncation *and* returns `undefined` on empty input, and it is the
+fastest sync partial parser in the set. **Re-run the harness yourself before
+citing any number publicly.**
 
 ## Install
 

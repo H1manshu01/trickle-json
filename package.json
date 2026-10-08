@@ -66,14 +66,20 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "size": "size-limit",
+    "bench": "tsx bench/index.ts",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@size-limit/preset-small-lib": "^11.1.6",
+    "best-effort-json-parser": "^1.5.1",
+    "jsonriver": "^1.1.1",
+    "partial-json": "^0.1.7",
     "size-limit": "^11.1.6",
     "tsup": "^8.3.5",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.2",
+    "untruncate-json": "^0.0.1",
     "vitest": "^2.1.8",
     "zod": "^3.24.1"
   },
