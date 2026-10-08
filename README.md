@@ -96,9 +96,30 @@ stop();
 Read a single value at a concrete (wildcard-free) dotted/indexed path.
 
 ### Subpath entry points
-- `trickle-json/zod` — `parsePartialZod(input, schema)` (optional `zod` peer dep).
-- `trickle-json/openai` — `fromOpenAIStream(stream)`.
-- `trickle-json/anthropic` — `fromAnthropicStream(stream)`.
+
+**`trickle-json/openai`** — works with the SDK's chunk objects or a raw SSE body:
+- `openAISSEToChunks(response.body)` — parse a raw `text/event-stream` body into chunk objects (skips `[DONE]`).
+- `fromOpenAIStream(chunks)` — stream `delta.content` JSON → progressive snapshots.
+- `streamOpenAIToolCalls(chunks)` — stream tool/function-call `arguments` → partial parsed arguments per call.
+
+**`trickle-json/anthropic`**:
+- `anthropicSSEToEvents(response.body)` — parse a raw SSE body into event objects.
+- `fromAnthropicStream(events)` — stream `text_delta` JSON → progressive snapshots.
+- `streamAnthropicToolInput(events)` — stream tool-use `input_json_delta` → partial parsed input per block.
+
+**`trickle-json/zod`** (optional `zod` peer dep):
+- `parsePartialTyped<T>(input)` — best-effort parse typed as `DeepPartial<T>`.
+- `TypedStreamingParser<T>` — a `StreamingJsonParser` with `DeepPartial<T>` snapshots.
+- `parsePartialZod(input, schema)` — parse + validate; returns `{ raw, data, valid }`.
+
+```ts
+import { openAISSEToChunks, streamOpenAIToolCalls } from "trickle-json/openai";
+
+const res = await fetch(endpoint, { /* ...stream: true */ });
+for await (const calls of streamOpenAIToolCalls(openAISSEToChunks(res.body!))) {
+  // calls[0].name, calls[0].arguments — arguments fill in as they stream
+}
+```
 
 ## Semantics
 

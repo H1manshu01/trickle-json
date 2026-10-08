@@ -20,12 +20,14 @@ Ship `M1 + M2` as **v0.1** early — it is already competitive.
 - [x] Array-append events (`on("append", "items", (item, i) => …)`)
 - [x] `once` option and unsubscribe handles (every `on` returns an `Unsubscribe`)
 
-## M4 — Typed + adapters
-- [ ] `trickle-json/zod`: emit typed *partial* snapshots (schema-aware), not just
-      post-hoc validation
-- [ ] `trickle-json/openai`: raw `text/event-stream` SSE parsing + tool-call
-      argument streams (`arguments` deltas)
-- [ ] `trickle-json/anthropic`: tool-use `input_json_delta` streaming
+## M4 — Typed + adapters ✅
+- [x] Zero-dep SSE parser (`src/sse.ts`), robust to chunk/UTF-8 boundaries
+- [x] `trickle-json/zod`: typed partial snapshots (`parsePartialTyped<T>`,
+      `TypedStreamingParser<T>`, `DeepPartial<T>`) plus `parsePartialZod` validation
+- [x] `trickle-json/openai`: raw SSE parsing (`openAISSEToChunks`) + tool-call
+      argument streams (`streamOpenAIToolCalls`)
+- [x] `trickle-json/anthropic`: raw SSE parsing (`anthropicSSEToEvents`) +
+      tool-use `input_json_delta` streaming (`streamAnthropicToolInput`)
 
 ## M5 — Harden & launch
 - [ ] Expand fuzz corpus; add adversarial/invalid-input tests (must stay

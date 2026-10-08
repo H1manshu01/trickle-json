@@ -352,6 +352,11 @@ export class StreamingJsonParser {
     return this.buf;
   }
 
+  /** The current best-effort value, without emitting events or ending the stream. */
+  snapshot(): unknown {
+    return this.engine.snapshot();
+  }
+
   private flush(done: boolean): unknown {
     const value = this.engine.snapshot();
 
